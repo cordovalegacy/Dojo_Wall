@@ -1,0 +1,32 @@
+Step 1: Create new ERD in workbench based on screenshot left in static folder
+
+Step 2: Start from the top of models and change information appropriately: 
+a. change imports and constructor
+b. change data in class methods to fit new schema
+c. comment out uncommon model methods
+
+Step 3: Start from the top of controllers and change information appropriately:
+a. change imports
+b. change data in app routes to fit model calls
+c. comment out unneeded routes
+d. comment out unneeded methods
+
+Step 4: Start at the first template in the wireframe and design
+a. work from the top, change information appropriately
+b. flag things to fix for later
+c. change jinja appropriately
+d. change form and routes appropriately
+
+Step 5: Go back and add in static method to model for validations
+
+Step 6: Go to controllers and add in bcrypt and firewalls to block access if not logged in
+
+Step 7: Dial in data requests
+a. queries
+b. jinja
+c. routes
+d. templates
+
+Step 8: Clean Up
+a. get rid of comments
+b. tidy up and tune fine details

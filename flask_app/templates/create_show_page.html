@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>TV SHOWS</title>
+</head>
+
+<body class="bg-primary p-3 text-left">
+    <div class="d-flex justify-content-between p-2">
+        <h2>Add a New Show!</h2>
+        <div class="bg-dark w-25 d-flex justify-content-evenly text-warning align-items-center rounded-2">
+            <a class="text-warning text-decoration-none" href="/show_all">TV Shows</a>
+            <a class="text-warning text-decoration-none" href="/logout">Logout</a>
+        </div>
+    </div>
+    <form class="w-50 p-3 mx-auto mt-5 bg-dark text-warning rounded-2" action="/create/show" method="post">
+        <input type="hidden" name="user_id" value="{{logged_user}}">
+        {% with messages = get_flashed_messages(category_filter=['Shows']) %}
+        {% if messages %}
+        {% for message in messages %}
+        <p class="text-center">{{message}}</p>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        <div class="m-2">
+            <label for="title" class="form-label">Title: </label>
+            <input type="text" name="title" class="form-control">
+        </div>
+        <div class="m-2">
+            <label for="network" class="form-label">Network: </label>
+            <input type="text" name="network" class="form-control">
+        </div>
+        <div class="m-2">
+            <label for="release_date" class="form-label">Release Date: </label>
+            <input type="date" name="release_date" class="form-control">
+        </div>
+        <div class="m-2">
+            <label for="description" class="form-label">Description: </label>
+            <input type="text" name="description" class="form-control">
+        </div>
+        <input type="submit" value="Add Show" class="m-2 btn btn-warning">
+    </form>
+</body>
+
+</html>
