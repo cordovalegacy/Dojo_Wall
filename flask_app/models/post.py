@@ -53,43 +53,6 @@ class Post:
 
 # !Render
 
-    # *render a single show's data connected to a user
-
-
-    @classmethod
-    def display_single_show(cls, data):
-        query = """
-                SELECT * FROM shows
-                LEFT JOIN users ON shows.user_id = users.id
-                LEFT JOIN users_shows ON shows.id = users_shows.show_id
-                WHERE shows.id = %(id)s
-                ;"""
-        results = connectToMySQL(cls.db).query_db(query, data)
-        result = cls(results[0])
-        print(result)
-        likes_query = """
-                        SELECT COUNT(*) as total_likes FROM users_shows
-                        WHERE show_id = %(id)s;
-                        """
-        likes_results = connectToMySQL(cls.db).query_db(likes_query, data)
-        print("likes results", likes_results)
-        result.likes = likes_results[0]['total_likes']
-        for row in results:
-            if row['users.id'] == None:
-                break
-            user_data = {
-                'id': row['users.id'],
-                'first_name': row['first_name'],
-                'last_name': row['last_name'],
-                'email': row['email'],
-                'password': "",
-                'created_at': row['users.created_at'],
-                'updated_at': row['users.updated_at']
-            }
-            result.viewers.append(user.User(user_data))
-        print("Appended Result", result)
-        return result
-
     # *from Robert Ponce (many to many) gets all posts for post table
     @classmethod
     def get_all_posts_with_user(cls):
@@ -121,7 +84,6 @@ class Post:
                 }
                 this_post.posted_by = user.User(data)
                 posts.append(this_post)
-                print("all posts", posts)
             if not row['comments.user_id'] == None:
                 comment_data = {
                     'id': row['poster.id'],
@@ -134,39 +96,13 @@ class Post:
                     'comment': row['comment'],
                 }
                 this_post.comments.append(comment_data)
-        print("post of zero---->", posts[0])
+        print("all posts---->", posts)
         return posts
 
 # !Update
 
-    # *update the show in the db
-    @classmethod
-    def edit_show(cls, data):
-        query = """
-                UPDATE shows 
-                SET 
-                title = %(title)s, 
-                network = %(network)s, 
-                release_date = %(release_date)s, 
-                description = %(description)s, 
-                updated_at = NOW() 
-                WHERE id=%(id)s
-                ;"""
-        return connectToMySQL(cls.db).query_db(query, data)
 
 # !Delete
-
-    # *delete a like in the db from joining table
-    @classmethod
-    def dislike_show(cls, data):
-        query = """
-                DELETE FROM users_shows
-                WHERE
-                show_id=%(show_id)s
-                AND
-                user_id=%(user_id)s
-                """
-        return connectToMySQL(cls.db).query_db(query, data)
 
     # *delete a show from the db
     @classmethod
@@ -187,46 +123,3 @@ class Post:
             flash("Content of post must not be left blank", 'Posts')
             is_valid = False
         return is_valid
-
-
-# !Unused but may need
-    # *shows liked shows (did not use... but part of Robert Ponce Many to Many Lecture)
-    # @classmethod
-    # def users_like_shows(cls, data):
-    #     query = """
-    #             SELECT * FROM shows
-    #             LEFT JOIN users
-    #             ON shows.user_id = users.id
-    #             LEFT JOIN users_shows
-    #             ON shows.id = users_shows.show_id
-    #             LEFT JOIN users AS liked_by
-    #             ON users_shows.user_id = liked_by.id
-    #             WHERE shows.id = %(show_id)s
-    #             """
-    #     results = connectToMySQL(cls.db).query_db(query, data)
-    #     this_show = cls(results[0])
-    #     data = {
-    #         'id': results[0]['users.id'],
-    #         'first_name': results[0]['first_name'],
-    #         'last_name': results[0]['last_name'],
-    #         'email': results[0]['email'],
-    #         'password': results[0]['password'],
-    #         'created_at': results[0]['users.created_at'],
-    #         'updated_at': results[0]['users.updated_at']
-    #     }
-    #     this_viewer = user.User(data)
-    #     this_show.viewers = this_viewer
-    #     for row in results:
-    #         if not row['users_shows.user_id'] == None:
-    #             data = {
-    #                 'id': row['liked_by.id'],
-    #                 'first_name': row['liked_by.first_name'],
-    #                 'last_name': row['liked_by.last_name'],
-    #                 'email': row['liked_by.email'],
-    #                 'password': "",
-    #                 'created_at': row['liked_by.created_at'],
-    #                 'updated_at': row['liked_by.updated_at']
-    #             }
-    #             this_show.likes.append(user.User(data))
-    #     print("--->", this_show.id)
-    #     return this_show
