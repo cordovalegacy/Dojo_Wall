@@ -56,11 +56,8 @@ def create_user_page():
 def show_all():
     if 'user_id' not in session:
         return redirect('/registration')
-    user = {
-        'id': session['user_id']
-    }
     posts = Post.get_all_posts_with_user()
-    return render_template('home_page.html', all_posts = posts, user = user)
+    return render_template('home_page.html', posts = posts, user = {'id': session['user_id']})
 
 # !Clear Session
 

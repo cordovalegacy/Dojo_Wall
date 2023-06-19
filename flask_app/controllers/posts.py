@@ -20,15 +20,16 @@ def create_post():
     return redirect('/show_all')
 
 # *creates a new like (many to many)
-@app.route('/like_show/<int:id>')
-def like_show(id):
+@app.route('/create_comment', methods=['POST'])
+def create_comment():
     if 'user_id' not in session:
         return redirect('/registration')
     data = {
-        'show_id': id,
+        'post_id': request.form['post_id'],
+        'comment': request.form['comment'],
         'user_id':session['user_id']
     }
-    Show.like_show(data)
+    Post.create_comment(data)
     return redirect('/show_all')
 
 # !Render (authenticated)
@@ -85,14 +86,11 @@ def edit_show():
 # !Delete (auntenticated)
 
 # *deletes a show
-@app.route('/delete_one_show/<int:id>')
-def delete_one_show(id):
+@app.route('/delete_one_post/<int:id>')
+def delete_one_post(id):
     if 'user_id' not in session:
         return redirect('/registration')
-    data = {
-        'id': id
-    }
-    Show.delete_show(data)
+    Post.delete_post({'id': id})
     return redirect('/show_all')
 
 # *dislike button, deletes from joining table.. (many to many)

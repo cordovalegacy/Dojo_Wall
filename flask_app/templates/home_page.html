@@ -36,21 +36,37 @@
     <div class="w-[95%] border-t-2 decoration-gray-200 mx-auto my-10 gap-12 flex flex-col items-start justify-center">
         <h2 class="font-bold tracking-wide text-xl mt-10">All Community Posts</h2>
         {% if posts %}
-        <div class="overflow-auto flex flex-col items-start justify-center gap-4 max-h-60 border w-full">
-            {% for post in posts %}
-            <div>
-                <div>
-                    <h3>{{ post.posted_by.first_name }}</h3>
-                    <p>{{ post.comment }}</p>
+        <div class="overflow-hidden flex flex-col items-start justify-center gap-4 max-h-96 border w-full">
+            <div class="overflow-y-auto w-full px-10 py-2">
+                {% for post in posts|sort(attribute='created_at', reverse=True) %}
+                <div class="space-y-6 py-10 flex border-t-2 border-b-2 flex-col items-start justify-center">
+                    <div class="py-4 space-y-6">
+                        <h3>{{ post.posted_by.first_name }} - {{ post.created_at }}</h3>
+                        <div class="flex items-center justify-start gap-6 ml-10">
+                            <p>{{ post.content }}</p>
+                            {% if post.posted_by.id == user.id %}
+                            <button
+                                class="text-white hover:-translate-y-1 transition duration-300 bg-red-500 rounded-sm shadow-lg px-4 py-2"><a
+                                    href="/delete_one_post/{{post.id}}">Delete</a></button>
+                            {% endif %}
+                            {% if post.comment %}
+                            {% for this_comment in post.comments %}
+                            <p>{{ this_comment.comment }}</p>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <form class="flex items-center gap-2 justify-center min-w-fit h-[50px]" action="/create_comment"
+                        method="post">
+                        <input type="hidden" name="post_id" value={{post.id}}>
+                        <label for="comment" class="italic p-2">Post a Comment:</label>
+                        <input type="text" name="comment" class="p-2 rounded-sm text-black">
+                        <input type="submit" value="Comment"
+                            class="cursor-pointer hover:-translate-y-1 transition duration-300 px-4 py-2 bg-purple-500 shadow-lg hover:brightness-125 rounded-sm">
+                    </form>
                 </div>
-                <form>
-                    <label for="comment" class="italic">Post a Comment</label>
-                    <input type="text" name="comment">
-                    <input type="submit" value="Comment"
-                        class="-mt-10 px-4 py-2 bg-purple-500 shadow-lg hover:brightness-125 rounded-sm">
-                </form>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
         {% endif %}
     </div>
