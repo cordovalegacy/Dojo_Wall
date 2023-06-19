@@ -5,58 +5,55 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Dashboard</title>
 </head>
 
-<body class="bg-primary p-3 text-left">
-    <div class="d-flex justify-content-between mb-5">
-        <h2>Howdy {{session['user_name']}}!</h2>
-        <div class="bg-dark w-25 d-flex justify-content-evenly text-warning align-items-center rounded-2">
-            <a class="text-warning text-decoration-none" href="/create_show_page">+ Create Show</a>
-            <a class="text-warning text-decoration-none" href="/logout">Logout</a>
+<body class="p-2 bg-[#1e1e1e] text-gray-200">
+    <div class="flex w-[95%] items-center justify-between mx-auto border-b-2 py-10 decoration-gray-200">
+        <h1 class="text-4xl font-bold">Coding Dojo
+            Wall</h1>
+        <div class="flex items-center text-gray-200 gap-10">
+            <h2>Welcome, {{session['user_name']}}!</h2>
+            <a href="/logout" class="underline">Logout</a>
         </div>
     </div>
-    <h4>All TV Shows</h4>
-    <table class="table text-warning table-hover table-dark table-striped table-bordered border-warning mt-3">
-        <thead>
-            <tr>
-                <th>Show ID</th>
-                <th>Title</th>
-                <th>Network</th>
-                <th>Release Date</th>
-                <th>Actions</th>
-                <th>Like!</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for show in all_shows %}
-            <tr>
-                <td>{{ show.id }}</td>
-                <td>{{ show.title }}</td>
-                <td>{{ show.network }}</td>
-                <td>{{ show.release_date }}</td>
-                <td>
-                    <a class="text-warning text-decoration-none" href="/single_show_page/{{show.id}}">Show</a>
-                        {% if show.viewers.id == user.id %} 
-                        |
-                        <a class="text-warning text-decoration-none" href="/edit_show_page/{{show.id}}">Edit</a> | 
-                        <a class="text-warning text-decoration-none" href="/delete_one_show/{{show.id}}">Delete</a>
-                        {% endif %}
-                </td>
-                <td>
-                    {% if show.liked_by(session['user_id']) != True %}
-                    <button class="btn btn-secondary"><a class="text-decoration-none text-warning" href="/like_show/{{show.id}}">Like</a></button>
-                    {% else %}
-                    <button class="btn btn-secondary"><a class="text-decoration-none text-warning" href="/dislike_show/{{show.id}}">Dislike</a></button>
-                    {% endif %}
-                </td>
-            </tr>
+    <form action="/create/post" method="post"
+        class="w-[95%] mx-auto my-10 gap-8 flex flex-col items-start justify-center">
+        <h4 class="text-xl font-semibold">What's on your mind? Create a new post:</h4>
+        <div class="h-[10px]">
+            {% with messages = get_flashed_messages(category_filter=['Posts']) %}
+            {% if messages %}
+            {% for message in messages %}
+            <p class="text-red-500">{{message}}</p>
             {% endfor %}
-        </tbody>
-    </table>
-
+            {% endif %}
+            {% endwith %}
+        </div>
+        <textarea cols="150" rows="10" class="p-2 text-black rounded-sm" name="content"></textarea>
+        <button class="-mt-6 px-4 py-2 bg-blue-500 shadow-lg hover:brightness-125 rounded-sm">Publish</button>
+    </form>
+    <div class="w-[95%] border-t-2 decoration-gray-200 mx-auto my-10 gap-12 flex flex-col items-start justify-center">
+        <h2 class="font-bold tracking-wide text-xl mt-10">All Community Posts</h2>
+        {% if posts %}
+        <div class="overflow-auto flex flex-col items-start justify-center gap-4 max-h-60 border w-full">
+            {% for post in posts %}
+            <div>
+                <div>
+                    <h3>{{ post.posted_by.first_name }}</h3>
+                    <p>{{ post.comment }}</p>
+                </div>
+                <form>
+                    <label for="comment" class="italic">Post a Comment</label>
+                    <input type="text" name="comment">
+                    <input type="submit" value="Comment"
+                        class="-mt-10 px-4 py-2 bg-purple-500 shadow-lg hover:brightness-125 rounded-sm">
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 </body>
 
 </html>

@@ -1,26 +1,22 @@
 from flask_app import app
 from flask import render_template, redirect, request, session
-from flask_app.models.show import Show
+from flask_app.models.post import Post
 from flask_app.models import user
 
 # !Create (authenticated)
 
-# *creates a new show
-@app.route('/create/show', methods=['POST'])
-def create_show():
+# *creates a new post
+@app.route('/create/post', methods=['POST'])
+def create_post():
     if 'user_id' not in session:
         return redirect('/registration')
-    if not Show.validate_show(request.form):
-        return redirect('/create_show_page')
-    new_show_data = {
-        'title': request.form['title'],
-        'network': request.form['network'],
-        'release_date': request.form['release_date'],
-        'description': request.form['description'],
-        'user_id': session['user_id'],
-        'likes': None,
+    if not Post.validate_post(request.form):
+        return redirect('/show_all')
+    new_post_data = {
+        'content': request.form['content'],
+        'user_id': session['user_id']
     }
-    Show.save_shows(new_show_data)
+    Post.save_posts(new_post_data)
     return redirect('/show_all')
 
 # *creates a new like (many to many)
@@ -38,12 +34,12 @@ def like_show(id):
 # !Render (authenticated)
 
 # *shows create show page 
-@app.route('/create_show_page')
+@app.route('/create_post_page')
 def create_show_page():
     if 'user_id' not in session:
         return redirect('/registration')
     logged_user = session['user_name']
-    return render_template('create_show_page.html', logged_user = logged_user)
+    return render_template('create_post_page.html', logged_user = logged_user)
 
 # *shows a single show's details
 @app.route('/single_show_page/<int:id>')

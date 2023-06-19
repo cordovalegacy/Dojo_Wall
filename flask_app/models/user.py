@@ -1,11 +1,11 @@
 from flask_app.config.mysqlconnection import connectToMySQL
-from flask_app.models import show
+from flask_app.models import post
 from flask import flash
 import re
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$') 
 
 class User:
-
+    db = "dojo_wall" 
     def __init__(self, user):
         self.id = user['id']
         self.first_name = user['first_name']
@@ -14,7 +14,7 @@ class User:
         self.password = user['password']
         self.created_at = user['created_at']
         self.updated_at = user['updated_at']
-        self.favorites = []
+        self.posts = []
 
 # !Helper Methods
 
@@ -31,7 +31,7 @@ class User:
                 INSERT INTO users (first_name, last_name, email, password) 
                 VALUES (%(first_name)s, %(last_name)s, %(email)s, %(password)s)
                 ;"""
-        return connectToMySQL('tv_shows').query_db(query, user_data)
+        return connectToMySQL(cls.db).query_db(query, user_data)
 
 # !Render
 
@@ -39,7 +39,7 @@ class User:
     @classmethod
     def get_one_user_by_email(cls, data):
         query = "SELECT * FROM users WHERE email=%(email)s"
-        result = connectToMySQL('tv_shows').query_db(query, data)
+        result = connectToMySQL(cls.db).query_db(query, data)
         if len(result) < 1:
             return False
         return cls(result[0])
@@ -55,7 +55,7 @@ class User:
                 SELECT * FROM users 
                 WHERE email = %(email)s
                 ;"""
-        results = connectToMySQL('tv_shows').query_db(query, form_data)
+        results = connectToMySQL("dojo_wall").query_db(query, form_data)
         if len(results) >=1:
             flash("Email is taken, enter a different one", 'Register')
             is_valid = False
@@ -83,7 +83,7 @@ class User:
     #     query = """
     #             SELECT * FROM users
     #             ;"""
-    #     results = connectToMySQL('tv_shows').query_db(query)
+    #     results = connectToMySQL(cls.db).query_db(query)
     #     users = []
     #     for user in results:
     #         users.append(cls(user))
@@ -98,7 +98,7 @@ class User:
     #             NOT IN
     #             (SELECT user_id FROM users_books WHERE book_id = %(id)s)
     #             ;"""
-    #     results = connectToMySQL('tv_shows').query_db(query, non_favorites_data)
+    #     results = connectToMySQL(cls.db).query_db(query, non_favorites_data)
     #     print(results)
     #     users = []
     #     for row in results:
@@ -113,7 +113,7 @@ class User:
     #             SELECT * FROM users 
     #             WHERE id = %(user_id)s
     #             ;"""
-    #     results = connectToMySQL('tv_shows').query_db(query, single_user)
+    #     results = connectToMySQL(cls.db).query_db(query, single_user)
     #     return cls(results[0])
 
     # *if we need to join a field to the users for any reason
@@ -126,7 +126,7 @@ class User:
     #             LEFT JOIN shows ON shows.id = users_shows.show_id 
     #             WHERE users.id = %(user_id)s
     #             ;"""
-    #     results = connectToMySQL('tv_shows').query_db(query, users_and_shows)
+    #     results = connectToMySQL(cls.db).query_db(query, users_and_shows)
     #     user = cls(results[0])
     #     for row in results:
     #         if row['shows.id'] == None:

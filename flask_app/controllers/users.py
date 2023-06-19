@@ -1,7 +1,7 @@
 from flask_app import app
 from flask import render_template, redirect, request, session, flash
 from flask_app.models.user import User
-from flask_app.models.show import Show
+from flask_app.models.post import Post
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt(app)
 
@@ -21,9 +21,9 @@ def register():
         'password': bcrypt.generate_password_hash(request.form['password'])
     }
     id = User.save(user_data)
-    user_name = user_data['first_name']
+    name = user_data['first_name']
     session['user_id'] = id
-    session['user_name'] = user_name
+    session['user_name'] = name
     return redirect('/show_all')
 
 # *logs user in and validates
@@ -59,8 +59,8 @@ def show_all():
     user = {
         'id': session['user_id']
     }
-    shows = Show.get_all_shows_with_user()
-    return render_template('home_page.html', all_shows = shows, user = user)
+    posts = Post.get_all_posts_with_user()
+    return render_template('home_page.html', all_posts = posts, user = user)
 
 # !Clear Session
 
