@@ -27,7 +27,7 @@ def create_comment():
     data = {
         'post_id': request.form['post_id'],
         'comment': request.form['comment'],
-        'user_id':session['user_id']
+        'user_id': session['user_id']
     }
     Post.create_comment(data)
     return redirect('/show_all')

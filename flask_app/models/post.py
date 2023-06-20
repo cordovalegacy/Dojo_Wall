@@ -12,7 +12,7 @@ class Post:
         self.content = post['content']
         self.created_at = post['created_at']
         self.updated_at = post['updated_at']
-        self.posted_by = []  # one to many cls assoc.
+        self.posted_by = None  # one to many cls assoc.
         self.comments = []  # many to many cls assoc.
 
 # !Helper Methods
