@@ -39,18 +39,6 @@ class Post:
                 ;"""
         return connectToMySQL(cls.db).query_db(query, data)
 
-    # *create a new like in the joining table (uses both shows and users)
-    @classmethod
-    def create_comment(cls, data):
-        query = """
-                INSERT INTO comments
-                (post_id, comment, user_id)
-                VALUES
-                (%(post_id)s, %(comment)s, %(user_id)s)
-                """
-        return connectToMySQL(cls.db).query_db(query, data)
-
-
 # !Render
 
     # *from Robert Ponce (many to many) gets all posts for post table
